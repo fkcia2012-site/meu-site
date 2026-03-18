@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FKCIA - Vidros e Esquadrias</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>FKCIA Vidros e Esquadrias</h1>
+            <nav>
+                <a href="#galeria" class="nav-link">Galeria</a>
+                <a href="#sobre" class="nav-link">Sobre</a>
+                <a href="#contato" class="nav-link">Contato</a>
+                <a href="admin.html" class="nav-link admin-link">Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="galeria" class="galeria">
+        <div class="container">
+            <h2>Nossas Obras</h2>
+            <div id="obras-container" class="obras-grid">
+                <!-- As obras serão carregadas aqui via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="sobre">
+        <div class="container">
+            <h2>Sobre Nós</h2>
+            <p>FKCIA Vidros e Esquadrias - Especialista em soluções de vidros e esquadrias de alta qualidade.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 FKCIA Vidros e Esquadrias. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
