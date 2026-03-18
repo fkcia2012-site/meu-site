@@ -1,155 +1,46 @@
-# meu-site
-FKCIA Vidros e Esquadrias
--
+# FKCIA Vidros e Esquadrias - Site
 
-📁 public/index.html
+Website para galeria de projetos da empresa FKCIA Vidros e Esquadrias.
 
-```html
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FKCIA Vidros e Esquadrias</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<header>
-  <h1>FKCIA Vidros e Esquadrias</h1>
-  <a href="admin.html">Login</a>
-</header>
-<section id="galeria"></section>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
-<script src="firebase-config.js"></script>
-<script src="app.js"></script>
-<script>
-// Mostrar obras públicas
-carregarGaleriaPublica();
-</script>
-</body>
-</html>
+## 📋 Estrutura do Projeto
+
+```
+public/
+├── index.html           # Página principal
+├── admin.html          # Painel administrativo
+├── styles.css          # Estilos CSS
+├── app.js              # Lógica JavaScript
+└── firebase-config.js  # Configuração Firebase
 ```
 
----
+## 🚀 Como Publicar no GitHub Pages
 
-📁 public/admin.html
+### Passo 1: Acessar as Configurações do Repositório
+1. Vá para **Settings** do repositório: https://github.com/fkcia2012-site/meu-site/settings
+2. Procure por **Pages** no menu lateral esquerdo
 
-```html
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin | FKCIA</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<h2>Login Admin</h2>
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="senha" placeholder="Senha">
-<button onclick="login()">Entrar</button>
-<div id="painel" style="display:none;">
-  <h2>Painel Administrativo</h2>
-  <input type="file" id="midiaInput">
-  <button onclick="uploadMidia()">Upload</button>
-  <button onclick="logout()" style="background:red;">Logout</button>
-  <div id="minhaGaleria"></div>
-</div>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js"></script>
-<script src="firebase-config.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
-```
+### Passo 2: Habilitar GitHub Pages
+1. Em "Source", selecione a branch **main**
+2. Selecione a pasta **/public**
+3. Clique em **Save**
 
----
+### Passo 3: Aguardar o Deploy
+- GitHub Pages irá processar seu site (leva 1-2 minutos)
+- Você verá uma mensagem verde quando estiver pronto
+- Seu site estará disponível em: https://fkcia2012-site.github.io/meu-site/
 
-📁 public/styles.css
+## 🔧 Configuração do Firebase
 
-```css
-body {font-family: Arial; margin:20px;}
-img, video {width: 200px; margin: 10px;}
-button {padding:10px 15px; background:green; color:white; border:none; cursor:pointer;}
-input {padding:10px; width:100%; max-width:400px; margin:5px 0;}
-#painel {margin-top:20px;}
-```
+Antes de usar o painel admin, você precisa:
 
----
+1. Criar um projeto Firebase em https://console.firebase.google.com/
+2. Copiar suas credenciais de configuração
+3. Atualizar o arquivo `public/firebase-config.js` com suas chaves
 
-📁 public/firebase-config.js
+## 📝 Funcionalidades
 
-```javascript
-// Cole suas chaves do Firebase aqui
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_AUTH_DOMAIN",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_STORAGE_BUCKET",
-  messagingSenderId: "SEU_MSG_SENDER_ID",
-  appId: "SEU_APP_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
-```
-
----
-
-📁 public/app.js
-
-```javascript
-// Funções Admin
-function login() {
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-  auth.signInWithEmailAndPassword(email, senha)
-    .then(() => document.getElementById("painel").style.display = "block")
-    .catch(err => alert(err.message));
-}
-function logout() { auth.signOut().then(() => location.reload()); }
-function uploadMidia() {
-  const file = document.getElementById("midiaInput").files[0];
-  const nome = Date.now() + "_" + file.name;
-  const ref = storage.ref().child(nome);
-  ref.put(file).then(() => {
-    ref.getDownloadURL().then(url => {
-      db.collection("obras").add({ url, type: file.type.includes("video") ? "video" : "image" });
-      alert("Upload feito!"); location.reload();
-    });
-  });
-}
-
-// Mostrar galeria Admin
-db.collection("obras").get().then(q => {
-  const div = document.getElementById("minhaGaleria");
-  q.forEach(d => {
-    const data = d.data();
-    const item = document.createElement(data.type === "image" ? "img" : "video");
-    item.src = data.url;
-    if (data.type === "video") item.controls = true;
-    div.appendChild(item);
-  });
-});
-
-// Função pública
-function carregarGaleriaPublica() {
-  const galeria = document.getElementById("galeria");
-  db.collection("obras").get().then(q => {
-    q.forEach(doc => {
-      const data = doc.data();
-      const item = document.createElement(data.type === "image" ? "img" : "video");
-      item.src = data.url;
-      if (data.type === "video") item.controls = true;
-      galeria.appendChild(item);
-    });
-  });
-}
-```
-
----
+- ✅ Galeria pública de projetos
+- ✅ Painel administrativo com login
+- ✅ Upload de imagens e vídeos
+- ✅ Armazenamento em Firebase
+- ✅ Responsive design
